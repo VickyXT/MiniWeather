@@ -35,7 +35,7 @@
             android:textSize="22.0sp"/>
 
         <ImageView
-            android:id="@id/title_update_btn"
+            android:id="@+id/title_update_btn"
             android:layout_width="45.0dp"
             android:layout_height="45.0dp"
             android:layout_alignParentRight="true"
@@ -43,14 +43,14 @@
             android:src="@drawable/title_update"/>
 
         <ImageView
-            android:id="@id/title_share"
+            android:id="@+id/title_share"
             android:layout_width="45.0dp"
             android:layout_height="45.0dp"
             android:layout_toLeftOf="@+id/title_update_btn"
             android:src="@drawable/title_share"/>
 
         <ImageView
-            android:id="@id/title_location"
+            android:id="@+id/title_location"
             android:layout_width="45.0dp"
             android:layout_height="45.0dp"
             android:layout_toLeftOf="@+id/title_share"
