@@ -115,6 +115,19 @@
                 android:textColor="@android:color/white"
                 android:textSize="15sp"/>
 
+            <!--当前温度-->
+            <TextView
+                android:id="@+id/temperature_now"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@id/humidity"
+                android:layout_marginLeft="15dp"
+                android:singleLine="true"
+                android:text="当前温度：3度"
+                android:textColor="@android:color/white"
+                android:textSize="15sp"/>
+
             <!--PM2.5模块-->
             <LinearLayout
                 android:id="@+id/pm2_5_content"
@@ -190,7 +203,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
-                android:layout_below="@id/humidity"
+                android:layout_below="@id/temperature_now"
                 android:layout_centerInParent="true"
                 android:layout_marginTop="5dp">
 
