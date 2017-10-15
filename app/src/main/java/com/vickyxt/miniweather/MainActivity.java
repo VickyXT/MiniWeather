@@ -41,7 +41,10 @@ public class MainActivity extends Activity implements View.OnClickListener{
             Toast.makeText(MainActivity.this,"网络挂了",Toast.LENGTH_LONG).show();
         }
     }
-    /*@param citycode*/
+    /**
+     *
+     * @param cityCode
+     */
     private void queryWeatherCode(String cityCode){
         final String address = "http://wthrcdn.etouch.cn/WeatherApi?citykey=" + cityCode;
         Log.d("myWeather",address);
@@ -78,7 +81,9 @@ public class MainActivity extends Activity implements View.OnClickListener{
 
     @Override
     public void onClick(View view){
+
         if (view.getId() == R.id.title_update_btn){
+
             SharedPreferences sharedPreferences = getSharedPreferences("config",MODE_PRIVATE);
             String cityCode = sharedPreferences.getString("main_city_code","101010100");
             Log.d("myWeather",cityCode);
