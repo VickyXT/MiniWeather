@@ -9,12 +9,18 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
 import com.vickyxt.util.NetUtil;
+
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlPullParserFactory;
 
 /**
  * Created by VickyXT on 2017/9/21.
@@ -23,6 +29,38 @@ import com.vickyxt.util.NetUtil;
 public class MainActivity extends Activity implements View.OnClickListener{
 
     private ImageView mUpdateBtn;
+
+    private void parseXML(String xmldata){
+        try {
+            XmlPullParserFactory fac = XmlPullParserFactory.newInstance();
+            XmlPullParser xmlPullParser = fac.newPullParser();
+            xmlPullParser.setInput(new StringReader(xmldata));
+            int eventType = xmlPullParser.getEventType();
+            Log.d("myWeather","parseXML");
+            while (eventType != XmlPullParser.END_DOCUMENT){
+                switch (eventType){
+                    case XmlPullParser.START_DOCUMENT:
+                        break;
+                    case XmlPullParser.START_TAG:
+                        if (xmlPullParser.getName().equals("city")){
+                            eventType = xmlPullParser.next();
+                            Log.d("myWeather","city:  "+xmlPullParser.getText());
+                        }else if (xmlPullParser.getName().equals("updatetime")){
+                            eventType = xmlPullParser.next();
+                            Log.d("myWeather","updatetime:  "+xmlPullParser.getText());
+                        }
+                        break;
+                    case XmlPullParser.END_TAG:
+                        break;
+                }
+                eventType = xmlPullParser.next();
+            }
+        }catch (XmlPullParserException e){
+            e.printStackTrace();
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+    }
 
     @Override
     protected void onCreate(Bundle saveInstanceState){
@@ -68,6 +106,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
                     }
                     String responseStr = response.toString();
                     Log.d("myWeather",responseStr);
+                    parseXML(responseStr);
                 }catch (Exception e){
                     e.printStackTrace();
                 }finally {
