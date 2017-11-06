@@ -12,13 +12,13 @@ public class City {
     private String allPY;
     private String allFirstPY;
 
-    public City(String province, String city, String number, String firstPY, String allPY, String allFristPY) {
+    public City(String province, String city, String number, String firstPY, String allPY, String allFirstPY) {
         this.province = province;
         this.city = city;
         this.number = number;
         this.firstPY = firstPY;
         this.allPY = allPY;
-        this.allFirstPY = allFristPY;
+        this.allFirstPY = allFirstPY;
     }
 
     public String getProvince(){

@@ -21,7 +21,7 @@ import java.util.List;
 public class MyApplication extends Application {
     private static final String TAG = "MyAPP";
 
-    private static MyApplication myApplication;
+    private static MyApplication mApplication;
     private CityDB mCityDB;
 
     private List<City> mCityList;
@@ -31,7 +31,7 @@ public class MyApplication extends Application {
         super.onCreate();
         Log.d(TAG,"MyApplication->Oncreate");
 
-        myApplication = this;
+        mApplication = this;
         mCityDB = openCityDB();
         initCityList();
     }
@@ -65,14 +65,14 @@ public class MyApplication extends Application {
     }
 
     public static MyApplication getInstance(){
-        return myApplication;
+        return mApplication;
     }
 
     private CityDB openCityDB(){
         String path = "/data"
                 + Environment.getDataDirectory().getAbsolutePath()
                 + File.separator + getPackageName()
-                + File.separator + "database1"
+                + File.separator + "databases1"
                 + File.separator
                 +CityDB.CITY_DB_NAME;
         File db = new File(path);
@@ -82,7 +82,7 @@ public class MyApplication extends Application {
             String pathfolder = "/data"
                     + Environment.getDataDirectory().getAbsolutePath()
                     + File.separator + getPackageName()
-                    + File.separator + "database1"
+                    + File.separator + "databases1"
                     + File.separator;
             File dirFirstFolder = new File(pathfolder);
             if (!dirFirstFolder.exists()){
