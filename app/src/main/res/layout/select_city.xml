@@ -48,7 +48,7 @@
             android:layout_height="wrap_content"
             android:background="#ffffff"
 
-            android:id="@+id/title_list">
+            android:id="@+id/city_list">
         </ListView>
     </RelativeLayout>
 

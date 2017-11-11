@@ -33,6 +33,7 @@ public class MyApplication extends Application {
 
         mApplication = this;
         mCityDB = openCityDB();
+
         initCityList();
     }
 
