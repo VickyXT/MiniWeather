@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.vickyxt.app.MyApplication;
+
 /**
  * Created by VickyXT on 2017/10/18.
  */
@@ -19,8 +21,9 @@ public class SelectCity extends Activity implements View.OnClickListener{
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.select_city);
-        mBackBtn = (ImageView) findViewById(R.id.title_back);
-        mBackBtn.setOnClickListener(this);
+
+
+        initCityView();
     }
 
     @Override
@@ -35,5 +38,14 @@ public class SelectCity extends Activity implements View.OnClickListener{
             default:
                 break;
         }
+    }
+
+    private void initCityView(){
+
+        mBackBtn = (ImageView) findViewById(R.id.title_back);
+        mBackBtn.setOnClickListener(this);
+
+
+
     }
 }

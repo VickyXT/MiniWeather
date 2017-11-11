@@ -5,6 +5,7 @@
 
     <RelativeLayout
         android:layout_width="fill_parent"
+        android:id="@+id/title_top"
         android:layout_height="45dip"
         android:background="#ffcd2626">
 
@@ -34,5 +35,22 @@
             android:background="#A71717"
             android:gravity="center"/>
     </RelativeLayout>
+
+    //ListView
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/title_top">
+
+
+        <ListView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#ffffff"
+
+            android:id="@+id/title_list">
+        </ListView>
+    </RelativeLayout>
+
 
 </RelativeLayout>
