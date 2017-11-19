@@ -15,6 +15,11 @@ import android.widget.EditText;
 
 public class ClearEditText extends android.support.v7.widget.AppCompatEditText implements View.OnFocusChangeListener, TextWatcher{
     private Drawable mClearDrawable;
+
+    public ClearEditText(Context context) {
+        this(context, null);
+    }
+
     public ClearEditText(Context context, AttributeSet attributeSet){
         this(context, attributeSet,android.R.attr.editTextStyle);
     }
@@ -27,7 +32,9 @@ public class ClearEditText extends android.support.v7.widget.AppCompatEditText i
     private void init(){
         mClearDrawable = getCompoundDrawables()[2];
         if (mClearDrawable == null){
-//            mClearDrawable = getResources().getDrawable(R.drawable.btn);
+//            mClearDrawable = getResources()
+//                    .getDrawable(R.drawable.emotionstore_progresscancelbtn);
+            mClearDrawable = getResources().getDrawable(R.drawable.magnifying_glass);
         }
         mClearDrawable.setBounds(0,0,mClearDrawable.getIntrinsicWidth(),mClearDrawable.getIntrinsicHeight());
         setClearIconVisible(false);
@@ -39,7 +46,7 @@ public class ClearEditText extends android.support.v7.widget.AppCompatEditText i
     public boolean onTouchEvent(MotionEvent event){
         if (getCompoundDrawables()[2]!=null){
             if (event.getAction() == MotionEvent.ACTION_UP){
-                boolean touchable = event.getX() > (getWidth() - getPaddingRight() - mClearDrawable.getIntrinsicWidth())&&(event.getX() < ((getWidth() - getPaddingRight())));
+                boolean touchable = event.getX() > (getWidth() - getPaddingRight() - mClearDrawable.getIntrinsicWidth()) && (event.getX() < (getWidth() - getPaddingRight()));
                 if (touchable){
                     this.setText("");
                 }
@@ -60,7 +67,7 @@ public class ClearEditText extends android.support.v7.widget.AppCompatEditText i
     }
 
     protected void setClearIconVisible(boolean visible){
-        Drawable right = visible?mClearDrawable:null;
+        Drawable right = visible ? mClearDrawable : null;
         setCompoundDrawables(getCompoundDrawables()[0],getCompoundDrawables()[1],right,getCompoundDrawables()[3]);
     }
 

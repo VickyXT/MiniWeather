@@ -32,39 +32,19 @@ public class SelectCity extends Activity implements View.OnClickListener{
 
     private ImageView mBackBtn;
     private ListView mListView;
-    private List<City> mCityList;
     private ClearEditText mClearEditText;
-    private ArrayList<City> filterDataList;
+    private List<City> mCityList;
+    private List<City> filterDataList;
+    private SimpleAdapter adapter;
+    private ArrayList<Map<String,Object>> mData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.select_city);
-        mClearEditText = (ClearEditText) findViewById(R.id.search_city);
-        //根据输入框输入值的改变来过滤搜索
-        mClearEditText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                //当输入框内值为空，更新为原来列表，否则为过滤数据列表
-                filterData(s.toString());
-                mListView.setAdapter();
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-
-
         initCityView();
+//        initClearEditText();
     }
 
     @Override
@@ -79,7 +59,6 @@ public class SelectCity extends Activity implements View.OnClickListener{
     }
 
     private void initCityView(){
-
         mBackBtn = (ImageView) findViewById(R.id.title_back);
         mBackBtn.setOnClickListener(this);
 
@@ -87,17 +66,9 @@ public class SelectCity extends Activity implements View.OnClickListener{
         MyApplication myApplication = (MyApplication) getApplication();
         mCityList = myApplication.getCityList();
 
-        List<Map<String,Object>> data = new ArrayList<Map<String,Object>>();
+        mData = converter(mCityList);
 
-
-        for (City city : mCityList){
-            Map<String,Object> item = new HashMap<String, Object>();
-            item.put("city_name", city.getCity());
-            item.put("city_number", city.getNumber());
-            data.add(item);
-        }
-
-        SimpleAdapter adapter = new SimpleAdapter(this, data, R.layout.city_item,
+        adapter = new SimpleAdapter(this, mData, R.layout.city_item,
                 new String[] {"city_name", "city_number"},
                 new int[] {R.id.city_name, R.id.city_number});
 
@@ -116,6 +87,43 @@ public class SelectCity extends Activity implements View.OnClickListener{
         });
     }
 
+    private void initClearEditText(){
+        mClearEditText = (ClearEditText)findViewById(R.id.search_city);
+        //根据输入框输入值的改变来过滤搜索
+        mClearEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                //当输入框内值为空，更新为原来列表，否则为过滤数据列表
+                filterData(s.toString());
+                mListView.setAdapter(adapter);
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+    }
+
+    // 数据格式转换 ArrayList<City> -> ArrayList<Map<String,Object>>
+    private ArrayList<Map<String,Object>> converter(List<City> cityList) {
+        ArrayList<Map<String,Object>> data = new ArrayList<Map<String,Object>>();
+        for (City city : cityList){
+            Map<String,Object> item = new HashMap<String, Object>();
+            item.put("city_name", city.getCity());
+            item.put("city_number", city.getNumber());
+            data.add(item);
+        }
+        return data;
+    }
+
+
     //根据输入框中的值过滤数据并更新mListView
     private void filterData(String filterStr){
         filterDataList = new ArrayList<City>();
@@ -129,12 +137,13 @@ public class SelectCity extends Activity implements View.OnClickListener{
         else {
             filterDataList.clear();
             for (City city:mCityList){
-                if (city.getCity().indexOf(filterStr.toString() != -1)){
+                if (city.getCity().indexOf(filterStr.toString()) != -1){
                     filterDataList.add(city);
                 }
             }
         }
+        //根据a-z排序
+        mData = converter(filterDataList);
+        adapter.notifyDataSetChanged();
     }
-    //根据a-z排序
-
 }
