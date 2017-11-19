@@ -37,19 +37,20 @@
     </RelativeLayout>
     
     //SearchCity
-    <RelativeLayout
+    <com.vickyxt.miniweather.ClearEditText
         android:layout_width="match_parent"
-        android:layout_height="10dp"
+        android:layout_height="wrap_content"
         android:layout_below="@id/title_top"
+        android:layout_margin="4dp"
         android:id="@+id/search_city"
-        android:hint="搜索地区"
         android:drawableLeft="@drawable/magnifying_glass"
         android:drawablePadding="6.0dp"
         android:maxLines="1"
         android:background="@drawable/contact_search_box_edittext_keyword_background"
         android:textColor="#ff000000"
         android:textColorHint="#ffcccccc"
-        android:textSize="15dp"></RelativeLayout>
+        android:hint="搜索地区"
+        android:textSize="15dp"></com.vickyxt.miniweather.ClearEditText>
 
     //ListView
     <RelativeLayout
