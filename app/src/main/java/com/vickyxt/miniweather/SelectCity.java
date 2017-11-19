@@ -4,6 +4,9 @@ import android.app.Activity;
 import android.content.Intent;
 import android.nfc.Tag;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -30,12 +33,35 @@ public class SelectCity extends Activity implements View.OnClickListener{
     private ImageView mBackBtn;
     private ListView mListView;
     private List<City> mCityList;
+    private ClearEditText mClearEditText;
+    private ArrayList<City> filterDataList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.select_city);
+        mClearEditText = (ClearEditText) findViewById(R.id.search_city);
+        //根据输入框输入值的改变来过滤搜索
+        mClearEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                //当输入框内值为空，更新为原来列表，否则为过滤数据列表
+                filterData(s.toString());
+                mListView.setAdapter();
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
 
 
         initCityView();
@@ -89,4 +115,26 @@ public class SelectCity extends Activity implements View.OnClickListener{
             }
         });
     }
+
+    //根据输入框中的值过滤数据并更新mListView
+    private void filterData(String filterStr){
+        filterDataList = new ArrayList<City>();
+        Log.d("Filter",filterStr);
+
+        if (TextUtils.isEmpty(filterStr)){
+            for (City city:mCityList){
+                filterDataList.add(city);
+            }
+        }
+        else {
+            filterDataList.clear();
+            for (City city:mCityList){
+                if (city.getCity().indexOf(filterStr.toString() != -1)){
+                    filterDataList.add(city);
+                }
+            }
+        }
+    }
+    //根据a-z排序
+
 }
