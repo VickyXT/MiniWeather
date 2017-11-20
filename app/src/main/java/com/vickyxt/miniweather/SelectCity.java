@@ -19,6 +19,8 @@ import com.vickyxt.app.MyApplication;
 import com.vickyxt.bean.City;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,7 +46,7 @@ public class SelectCity extends Activity implements View.OnClickListener{
 
         setContentView(R.layout.select_city);
         initCityView();
-//        initClearEditText();
+        initClearEditText();
     }
 
     @Override
@@ -68,11 +70,7 @@ public class SelectCity extends Activity implements View.OnClickListener{
 
         mData = converter(mCityList);
 
-        adapter = new SimpleAdapter(this, mData, R.layout.city_item,
-                new String[] {"city_name", "city_number"},
-                new int[] {R.id.city_name, R.id.city_number});
-
-        mListView.setAdapter(adapter);
+        updateListView();
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -92,23 +90,29 @@ public class SelectCity extends Activity implements View.OnClickListener{
         //根据输入框输入值的改变来过滤搜索
         mClearEditText.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
             }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 //当输入框内值为空，更新为原来列表，否则为过滤数据列表
-                filterData(s.toString());
-                mListView.setAdapter(adapter);
-
+                filterData(charSequence.toString());
             }
 
             @Override
-            public void afterTextChanged(Editable s) {
+            public void afterTextChanged(Editable editable) {
 
             }
         });
+    }
+
+    private void updateListView() {
+        adapter = new SimpleAdapter(this, mData, R.layout.city_item,
+                new String[] {"city_name", "city_number"},
+                new int[] {R.id.city_name, R.id.city_number});
+
+        mListView.setAdapter(adapter);
     }
 
     // 数据格式转换 ArrayList<City> -> ArrayList<Map<String,Object>>
@@ -130,20 +134,21 @@ public class SelectCity extends Activity implements View.OnClickListener{
         Log.d("Filter",filterStr);
 
         if (TextUtils.isEmpty(filterStr)){
-            for (City city:mCityList){
-                filterDataList.add(city);
-            }
+            // 为空，保持原数据状态
+            filterDataList = mCityList;
         }
         else {
+            // 有内容
             filterDataList.clear();
-            for (City city:mCityList){
+            for (City city: mCityList){
                 if (city.getCity().indexOf(filterStr.toString()) != -1){
                     filterDataList.add(city);
                 }
             }
         }
         //根据a-z排序
+//        Collections.sort(filterDataList, pinyinComparator);
         mData = converter(filterDataList);
-        adapter.notifyDataSetChanged();
+        updateListView();
     }
 }
