@@ -81,8 +81,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
     private void updateView(){
         SharedPreferences sharedPreferences = (SharedPreferences)getSharedPreferences("config",MODE_PRIVATE);
         String cityCode = sharedPreferences.getString("main_city_code","101010100");
-        updateProgress.setVisibility(View.INVISIBLE);
-        mUpdateBtn.setVisibility(View.VISIBLE);
+
 
         if (NetUtil.getNetworkState(this) != NetUtil.NETWORN_NONE){
             Log.d("myWeather","网络ok");
@@ -292,5 +291,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
         climateTv.setText(todayWeather.getType());
         windTv.setText("风力:"+ todayWeather.getFengli());
         Toast.makeText(MainActivity.this,"更新成功！",Toast.LENGTH_SHORT).show();
+        updateProgress.setVisibility(View.INVISIBLE);
+        mUpdateBtn.setVisibility(View.VISIBLE);
     }
 }

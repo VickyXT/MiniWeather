@@ -41,7 +41,7 @@
             android:layout_height="45.0dp"
             android:layout_alignParentRight="true"
             android:layout_gravity="center"
-            android:visibility="invisible"
+            android:visibility="visible"
             android:src="@drawable/title_update"/>
 
         <ImageView
