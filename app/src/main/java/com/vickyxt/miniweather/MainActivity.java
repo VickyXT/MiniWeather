@@ -10,6 +10,7 @@ import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,6 +37,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
 
     private static final int UPDATE_TODAY_WEATHER = 1;
     private ImageView mUpdateBtn;
+    private ProgressBar updateProgress;
 
     private ImageView mCitySelect;
 
@@ -69,6 +71,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
         windTv = (TextView) findViewById(R.id.wind);
         weatherImg = (ImageView) findViewById(R.id.weather_img);
         temperatureNowTv = (TextView) findViewById(R.id.temperature_now);
+        updateProgress = (ProgressBar)findViewById(R.id.title_update_progress);
 
 
         updateView();
@@ -78,6 +81,8 @@ public class MainActivity extends Activity implements View.OnClickListener{
     private void updateView(){
         SharedPreferences sharedPreferences = (SharedPreferences)getSharedPreferences("config",MODE_PRIVATE);
         String cityCode = sharedPreferences.getString("main_city_code","101010100");
+        updateProgress.setVisibility(View.INVISIBLE);
+        mUpdateBtn.setVisibility(View.VISIBLE);
 
         if (NetUtil.getNetworkState(this) != NetUtil.NETWORN_NONE){
             Log.d("myWeather","网络ok");
@@ -255,6 +260,8 @@ public class MainActivity extends Activity implements View.OnClickListener{
 
         if (view.getId() == R.id.title_update_btn){
 
+            updateProgress.setVisibility(View.VISIBLE);
+            mUpdateBtn.setVisibility(View.INVISIBLE);
             updateView();
         }
     }
