@@ -71,7 +71,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
         windTv = (TextView) findViewById(R.id.wind);
         weatherImg = (ImageView) findViewById(R.id.weather_img);
         temperatureNowTv = (TextView) findViewById(R.id.temperature_now);
-        updateProgress = (ProgressBar)findViewById(R.id.title_update_progress);
+
 
 
         updateView();
@@ -186,6 +186,9 @@ public class MainActivity extends Activity implements View.OnClickListener{
         mUpdateBtn = (ImageView) findViewById(R.id.title_update_btn);
         mUpdateBtn.setOnClickListener(this);
 
+        updateProgress = (ProgressBar)findViewById(R.id.title_update_progress);
+        updateProgress.setOnClickListener(this);
+
         if (NetUtil.getNetworkState(this) != NetUtil.NETWORN_NONE){
             Log.d("myWeather","网络ok");
             Toast.makeText(MainActivity.this,"网络ok！",Toast.LENGTH_LONG).show();
@@ -261,6 +264,13 @@ public class MainActivity extends Activity implements View.OnClickListener{
 
             updateProgress.setVisibility(View.VISIBLE);
             mUpdateBtn.setVisibility(View.INVISIBLE);
+            updateView();
+        }
+
+        if (view.getId() == R.id.title_update_progress){
+
+            updateProgress.setVisibility(View.INVISIBLE);
+            mUpdateBtn.setVisibility(View.VISIBLE);
             updateView();
         }
     }
