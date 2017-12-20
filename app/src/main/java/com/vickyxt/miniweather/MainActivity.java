@@ -21,13 +21,20 @@ import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
 
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.TypeReference;
 import com.vickyxt.bean.TodayWeather;
 import com.vickyxt.util.NetUtil;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
+
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
 
 /**
  * Created by VickyXT on 2017/9/21.
@@ -100,7 +107,8 @@ public class MainActivity extends Activity implements View.OnClickListener{
 
         if (NetUtil.getNetworkState(this) != NetUtil.NETWORN_NONE){
             Log.d("myWeather","网络ok");
-            queryWeatherCode(cityCode);
+//            queryWeatherCode(cityCode);
+            queryWeather(cityCode);
         }
         else{
             Log.d("myWeather","网络挂了");
@@ -303,6 +311,61 @@ public class MainActivity extends Activity implements View.OnClickListener{
      *
      * @param cityCode
      */
+    private void queryWeather(String cityCode){
+        final String TAG = "Method";
+        final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+        try {
+            String url = "http://zhwnlapi.etouch.cn/Ecalender/api/v2/weather?citykey=";
+            url += cityCode;
+            Log.d("Method", url);
+
+            OkHttpClient.Builder mBuilder = new OkHttpClient.Builder();
+            OkHttpClient client = mBuilder.build();
+            Request request = new Request.Builder()
+                    .url(url)
+                    .get()
+                    .build();
+            client.newCall(request).enqueue(new okhttp3.Callback() {
+                @Override
+                public void onFailure(okhttp3.Call call, IOException e) {
+                    Log.d(TAG,e.toString());
+                }
+                @Override
+                public void onResponse(okhttp3.Call call, okhttp3.Response response) throws IOException {
+                    // 注：该回调是子线程，非主线程
+                    Log.d(TAG,"callback thread id is "+Thread.currentThread().getId());
+                    TodayWeather todayWeather = new TodayWeather();
+                    String json = response.body().string();
+                    Log.d(TAG,json);
+                    JSONObject map = com.alibaba.fastjson.JSON.parseObject(json, new TypeReference<JSONObject>() {});
+                    JSONObject meta = map.getJSONObject("meta");
+                    JSONObject env = map.getJSONObject("evn");
+                    JSONObject observe = map.getJSONObject("observe");
+
+                    todayWeather.setCity(meta.getString("city"));
+                    todayWeather.setUpdatetime(meta.getString("up_time"));
+                    todayWeather.setWendu(observe.getString("temp"));
+                    todayWeather.setShidu(observe.getString("shidu"));
+                    todayWeather.setPm25(env.getString("pm25"));
+                    todayWeather.setQuality(env.getString("quality"));
+                    todayWeather.setFengxiang(observe.getString("wd"));
+                    todayWeather.setFengli(observe.getString("wp"));
+                    todayWeather.setDate("");
+                    todayWeather.setHigh("");
+                    todayWeather.setLow("");
+                    todayWeather.setType(observe.getString("wthr"));
+
+                    Message msg = new Message();
+                    msg.what = UPDATE_TODAY_WEATHER;
+                    msg.obj = todayWeather;
+                    mHandler.sendMessage(msg);
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private void queryWeatherCode(String cityCode){
         final String address = "http://wthrcdn.etouch.cn/WeatherApi?citykey=" + cityCode;
         Log.d("myWeather",address);
@@ -397,7 +460,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
         temperatureTv.setText(todayWeather.getLow()+"~"+todayWeather.getHigh());
         climateTv.setText(todayWeather.getType());
         windTv.setText("风力:"+ todayWeather.getFengli());
-        data1TV.setText(todayWeather.getDate1());
+//        data1TV.setText(todayWeather.getDate1());
         Toast.makeText(MainActivity.this,"更新成功！",Toast.LENGTH_SHORT).show();
         updateProgress.setVisibility(View.INVISIBLE);
         mUpdateBtn.setVisibility(View.VISIBLE);
