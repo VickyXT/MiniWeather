@@ -14,23 +14,19 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.StringReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.vickyxt.bean.TodayWeather;
 import com.vickyxt.util.NetUtil;
 
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-import org.xmlpull.v1.XmlPullParserFactory;
 
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -48,7 +44,8 @@ public class MainActivity extends Activity implements View.OnClickListener{
 
     private ImageView mCitySelect;
 
-    private TextView cityTv,timeTv,humidityTv,weekTv,pmDataTv,pmQualityTv,temperatureTv,climateTv,windTv,cityNameTv,temperatureNowTv, data1TV,temp1TV,type1TV,feng1TV,data2TV,temp2TV,type2TV,feng2TV,data3TV,temp3TV,type3TV,feng3TV,data4TV,temp4TV,type4TV,feng4TV;
+    private TextView cityTv,timeTv,humidityTv,weekTv,pmDataTv,pmQualityTv,temperatureTv,climateTv,windTv,cityNameTv,temperatureNowTv;
+    private ArrayList<HashMap<String, TextView>> forecastTvArr;
     private ImageView weatherImg,pmImg;
 
     private Handler mHandler = new Handler(){
@@ -78,26 +75,28 @@ public class MainActivity extends Activity implements View.OnClickListener{
         windTv = (TextView) findViewById(R.id.wind);
         weatherImg = (ImageView) findViewById(R.id.weather_img);
         temperatureNowTv = (TextView) findViewById(R.id.temperature_now);
-        data1TV = (TextView)findViewById(R.id.date1);
-        temp1TV = (TextView)findViewById(R.id.temp1);
-        type1TV = (TextView)findViewById(R.id.cli1);
-        feng1TV = (TextView)findViewById(R.id.feng1);
-        data2TV = (TextView)findViewById(R.id.date2);
-        temp2TV = (TextView)findViewById(R.id.temp2);
-        type2TV = (TextView)findViewById(R.id.cli2);
-        feng2TV = (TextView)findViewById(R.id.feng2);
-        data3TV = (TextView)findViewById(R.id.date3);
-        temp3TV = (TextView)findViewById(R.id.temp3);
-        type3TV = (TextView)findViewById(R.id.cli3);
-        feng3TV = (TextView)findViewById(R.id.feng3);
-        data4TV = (TextView)findViewById(R.id.date4);
-        temp4TV = (TextView)findViewById(R.id.temp4);
-        type4TV = (TextView)findViewById(R.id.cli4);
-        feng4TV = (TextView)findViewById(R.id.feng4);
-
-
+        forecastTvArr = new ArrayList<HashMap<String, TextView>>();
+        for (int i = 0; i < 4; i++) {
+            HashMap<String, TextView> item = new HashMap<String, TextView>();
+            forecastTvArr.add(item);
+        }
+        forecastTvArr.get(0).put("date", (TextView)findViewById(R.id.date1));
+        forecastTvArr.get(0).put("temp", (TextView)findViewById(R.id.temp1));
+        forecastTvArr.get(0).put("type", (TextView)findViewById(R.id.cli1));
+        forecastTvArr.get(0).put("fengli", (TextView)findViewById(R.id.feng1));
+        forecastTvArr.get(1).put("date", (TextView)findViewById(R.id.date2));
+        forecastTvArr.get(1).put("temp", (TextView)findViewById(R.id.temp2));
+        forecastTvArr.get(1).put("type", (TextView)findViewById(R.id.cli2));
+        forecastTvArr.get(1).put("fengli", (TextView)findViewById(R.id.feng2));
+        forecastTvArr.get(2).put("date", (TextView)findViewById(R.id.date3));
+        forecastTvArr.get(2).put("temp", (TextView)findViewById(R.id.temp3));
+        forecastTvArr.get(2).put("type", (TextView)findViewById(R.id.cli3));
+        forecastTvArr.get(2).put("fengli", (TextView)findViewById(R.id.feng3));
+        forecastTvArr.get(3).put("date", (TextView)findViewById(R.id.date4));
+        forecastTvArr.get(3).put("temp", (TextView)findViewById(R.id.temp4));
+        forecastTvArr.get(3).put("type", (TextView)findViewById(R.id.cli4));
+        forecastTvArr.get(3).put("fengli", (TextView)findViewById(R.id.feng4));
         updateView();
-
     }
 
     private void updateView(){
@@ -107,180 +106,12 @@ public class MainActivity extends Activity implements View.OnClickListener{
 
         if (NetUtil.getNetworkState(this) != NetUtil.NETWORN_NONE){
             Log.d("myWeather","网络ok");
-//            queryWeatherCode(cityCode);
             queryWeather(cityCode);
         }
         else{
             Log.d("myWeather","网络挂了");
             Toast.makeText(MainActivity.this,"网络挂了",Toast.LENGTH_LONG).show();
         }
-    }
-
-    private TodayWeather parseXML(String xmldata){
-
-        TodayWeather todayWeather = null;
-
-        int fengliCount = 0;
-        int dateCount = 0;
-        int highCount = 0;
-        int lowCount = 0;
-        int typeCount = 0;
-        int fengxiangCount = 0;
-
-
-        try {
-            XmlPullParserFactory fac = XmlPullParserFactory.newInstance();
-            XmlPullParser xmlPullParser = fac.newPullParser();
-            xmlPullParser.setInput(new StringReader(xmldata));
-            int eventType = xmlPullParser.getEventType();
-            Log.d("myWeather","parseXML");
-            while (eventType != XmlPullParser.END_DOCUMENT){
-                switch (eventType){
-                    case XmlPullParser.START_DOCUMENT:
-                        break;
-                    case XmlPullParser.START_TAG:
-                        if (xmlPullParser.getName().equals("resp")){
-                            todayWeather = new TodayWeather();
-                        }
-                        if (todayWeather != null){
-                            if (xmlPullParser.getName().equals("city")){
-                                eventType = xmlPullParser.next();
-                                todayWeather.setCity(xmlPullParser.getText());
-                            } else if (xmlPullParser.getName().equals("updatetime")){
-                                eventType = xmlPullParser.next();
-                                todayWeather.setUpdatetime(xmlPullParser.getText());
-                            }else if (xmlPullParser.getName().equals("wendu")){
-                                eventType = xmlPullParser.next();
-                                todayWeather.setWendu(xmlPullParser.getText());
-                            }else if (xmlPullParser.getName().equals("fengli") && fengliCount == 0){
-                                eventType = xmlPullParser.next();
-                                todayWeather.setFengli(xmlPullParser.getText());
-                                fengliCount ++;
-                            }else if (xmlPullParser.getName().equals("shidu")) {
-                                eventType = xmlPullParser.next();
-                                todayWeather.setShidu(xmlPullParser.getText());
-                            }else if (xmlPullParser.getName().equals("fengxiang") && fengxiangCount == 0) {
-                                eventType = xmlPullParser.next();
-                                todayWeather.setFengxiang(xmlPullParser.getText());
-                                fengxiangCount ++;
-                            }else if (xmlPullParser.getName().equals("pm25")) {
-                                eventType = xmlPullParser.next();
-                                todayWeather.setPm25(xmlPullParser.getText());
-                            }else if (xmlPullParser.getName().equals("quality")) {
-                                eventType = xmlPullParser.next();
-                                todayWeather.setQuality(xmlPullParser.getText());
-                            }else if (xmlPullParser.getName().equals("date") && dateCount == 0) {
-                                eventType = xmlPullParser.next();
-                                todayWeather.setDate(xmlPullParser.getText());
-                                dateCount ++;
-                            }else if (xmlPullParser.getName().equals("high") && highCount == 0) {
-                                eventType = xmlPullParser.next();
-                                todayWeather.setHigh(xmlPullParser.getText().substring(2).trim());
-                                highCount ++;
-                            }else if (xmlPullParser.getName().equals("low") && lowCount == 0) {
-                                eventType = xmlPullParser.next();
-                                todayWeather.setLow(xmlPullParser.getText().substring(2).trim());
-                                lowCount ++;
-                            }else if (xmlPullParser.getName().equals("type") && typeCount == 0) {
-                                eventType = xmlPullParser.next();
-                                todayWeather.setType(xmlPullParser.getText());
-                                typeCount ++;
-                            }else if (xmlPullParser.getName().equals("date") && dateCount == 1) {
-                                eventType = xmlPullParser.next();
-                                Log.d("myweather","date1 :"+xmlPullParser.next());
-                                todayWeather.setDate1(xmlPullParser.getText());
-                                dateCount ++;
-                            }else if (xmlPullParser.getName().equals("high") && highCount == 1) {
-                                eventType = xmlPullParser.next();
-                                todayWeather.setType(xmlPullParser.getText().substring(2).trim());
-                                highCount ++;
-                            }else if (xmlPullParser.getName().equals("low") && lowCount == 1) {
-                                eventType = xmlPullParser.next();
-                                todayWeather.setType(xmlPullParser.getText().substring(2).trim());
-                                lowCount ++;
-                            }else if (xmlPullParser.getName().equals("fengli") && fengliCount == 1) {
-                                eventType = xmlPullParser.next();
-                                todayWeather.setType(xmlPullParser.getText());
-                                fengliCount ++;
-                            }else if (xmlPullParser.getName().equals("type") && typeCount == 1) {
-                                eventType = xmlPullParser.next();
-                                todayWeather.setType(xmlPullParser.getText());
-                                typeCount ++;
-                            }else if (xmlPullParser.getName().equals("date") && dateCount == 2) {
-                                eventType = xmlPullParser.next();
-                                todayWeather.setType(xmlPullParser.getText());
-                                dateCount ++;
-                            }else if (xmlPullParser.getName().equals("high") && highCount == 2) {
-                                eventType = xmlPullParser.next();
-                                todayWeather.setType(xmlPullParser.getText().substring(2).trim());
-                                highCount ++;
-                            }else if (xmlPullParser.getName().equals("low") && lowCount == 2) {
-                                eventType = xmlPullParser.next();
-                                todayWeather.setType(xmlPullParser.getText().substring(2).trim());
-                                lowCount ++;
-                            }else if (xmlPullParser.getName().equals("fengli") && fengliCount == 2) {
-                                eventType = xmlPullParser.next();
-                                todayWeather.setType(xmlPullParser.getText());
-                                fengliCount ++;
-                            }else if (xmlPullParser.getName().equals("type") && typeCount == 2) {
-                                eventType = xmlPullParser.next();
-                                todayWeather.setType(xmlPullParser.getText());
-                                typeCount ++;
-                            }else if (xmlPullParser.getName().equals("date") && dateCount == 3) {
-                                eventType = xmlPullParser.next();
-                                todayWeather.setType(xmlPullParser.getText());
-                                dateCount ++;
-                            }else if (xmlPullParser.getName().equals("high") && highCount == 3) {
-                                eventType = xmlPullParser.next();
-                                todayWeather.setType(xmlPullParser.getText().substring(2).trim());
-                                highCount ++;
-                            }else if (xmlPullParser.getName().equals("low") && lowCount == 3) {
-                                eventType = xmlPullParser.next();
-                                todayWeather.setType(xmlPullParser.getText().substring(2).trim());
-                                lowCount ++;
-                            }else if (xmlPullParser.getName().equals("fengli") && fengliCount == 3) {
-                                eventType = xmlPullParser.next();
-                                todayWeather.setType(xmlPullParser.getText());
-                                fengliCount ++;
-                            }else if (xmlPullParser.getName().equals("type") && typeCount == 3) {
-                                eventType = xmlPullParser.next();
-                                todayWeather.setType(xmlPullParser.getText());
-                                typeCount ++;
-                            }else if (xmlPullParser.getName().equals("date") && dateCount == 4) {
-                                eventType = xmlPullParser.next();
-                                todayWeather.setType(xmlPullParser.getText());
-                                dateCount ++;
-                            }else if (xmlPullParser.getName().equals("high") && highCount == 4) {
-                                eventType = xmlPullParser.next();
-                                todayWeather.setType(xmlPullParser.getText().substring(2).trim());
-                                highCount ++;
-                            }else if (xmlPullParser.getName().equals("low") && lowCount == 4) {
-                                eventType = xmlPullParser.next();
-                                todayWeather.setType(xmlPullParser.getText().substring(2).trim());
-                                lowCount ++;
-                            }else if (xmlPullParser.getName().equals("fengli") && fengliCount == 4) {
-                                eventType = xmlPullParser.next();
-                                todayWeather.setType(xmlPullParser.getText());
-                                fengliCount ++;
-                            }else if (xmlPullParser.getName().equals("type") && typeCount == 4) {
-                                eventType = xmlPullParser.next();
-                                todayWeather.setType(xmlPullParser.getText());
-                                typeCount ++;
-                            }
-
-                        }
-                        break;
-                    case XmlPullParser.END_TAG:
-                        break;
-                }
-                eventType = xmlPullParser.next();
-            }
-        }catch (XmlPullParserException e){
-            e.printStackTrace();
-        }catch (IOException e){
-            e.printStackTrace();
-        }
-        return todayWeather;
     }
 
     @Override
@@ -339,21 +170,45 @@ public class MainActivity extends Activity implements View.OnClickListener{
                     Log.d(TAG,json);
                     JSONObject map = com.alibaba.fastjson.JSON.parseObject(json, new TypeReference<JSONObject>() {});
                     JSONObject meta = map.getJSONObject("meta");
-                    JSONObject env = map.getJSONObject("evn");
+                    JSONObject evn = map.getJSONObject("evn");
                     JSONObject observe = map.getJSONObject("observe");
+                    JSONArray forecast = map.getJSONArray("forecast");
 
                     todayWeather.setCity(meta.getString("city"));
                     todayWeather.setUpdatetime(meta.getString("up_time"));
                     todayWeather.setWendu(observe.getString("temp"));
                     todayWeather.setShidu(observe.getString("shidu"));
-                    todayWeather.setPm25(env.getString("pm25"));
-                    todayWeather.setQuality(env.getString("quality"));
+                    todayWeather.setPm25(evn.getString("pm25"));
+                    todayWeather.setQuality(evn.getString("quality"));
                     todayWeather.setFengxiang(observe.getString("wd"));
-                    todayWeather.setFengli(observe.getString("wp"));
-                    todayWeather.setDate("");
-                    todayWeather.setHigh("");
-                    todayWeather.setLow("");
-                    todayWeather.setType(observe.getString("wthr"));
+
+                    ArrayList<HashMap<String, String>> arr = new ArrayList<HashMap<String, String>>();
+                    int i = 0;
+                    for (Object data: forecast) {
+                        data = (JSONObject) data;
+                        String date = ((JSONObject) data).getString("date");
+                        String high = ((JSONObject) data).getString("high");
+                        String low = ((JSONObject) data).getString("low");
+                        JSONObject day = ((JSONObject) data).getJSONObject("day");
+                        String wp = day.getString("wp");
+                        String wthr = day.getString("wthr");
+                        HashMap<String, String> item = new HashMap<String, String>();
+                        item.put("date", getDayOfWeek(date));
+                        item.put("high", high);
+                        item.put("low", low);
+                        item.put("fengli", wp);
+                        item.put("type", wthr);
+                        arr.add(item);
+                        if (i == 1) {
+                            todayWeather.setDate(getDayOfWeek(date));
+                            todayWeather.setHigh(high);
+                            todayWeather.setLow(low);
+                            todayWeather.setFengli(wp);
+                            todayWeather.setType(wthr);
+                        }
+                        i++;
+                    }
+                    todayWeather.setForecast(arr);
 
                     Message msg = new Message();
                     msg.what = UPDATE_TODAY_WEATHER;
@@ -366,49 +221,42 @@ public class MainActivity extends Activity implements View.OnClickListener{
         }
     }
 
-    private void queryWeatherCode(String cityCode){
-        final String address = "http://wthrcdn.etouch.cn/WeatherApi?citykey=" + cityCode;
-        Log.d("myWeather",address);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                HttpURLConnection con = null;
-                TodayWeather todayWeather = null;
-                try {
-                    URL url = new URL(address);
-                    con = (HttpURLConnection)url.openConnection();
-                    con.setRequestMethod("GET");
-                    con.setConnectTimeout(8000);
-                    con.setReadTimeout(8000);
-                    InputStream in = con.getInputStream();
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-                    StringBuilder response = new StringBuilder();
-                    String str;
-                    while ((str = reader.readLine()) != null){
-                        response.append(str);
-                        Log.d("myWeather",str);
-                    }
-                    String responseStr = response.toString();
-                    Log.d("myWeather",responseStr);
-
-                    todayWeather = parseXML(responseStr);
-                    if (todayWeather != null){
-                        Log.d("myWeather",todayWeather.toString());
-
-                        Message msg = new Message();
-                        msg.what = UPDATE_TODAY_WEATHER;
-                        msg.obj = todayWeather;
-                        mHandler.sendMessage(msg);
-                    }
-                }catch (Exception e){
-                    e.printStackTrace();
-                }finally {
-                    if (con != null){
-                        con.disconnect();
-                    }
-                }
-            }
-        }).start();
+    private String getDayOfWeek(String date) {
+        SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
+        Calendar c = Calendar.getInstance();
+        try {
+            c.setTime(format.parse(date));
+        } catch (ParseException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        String week = "星期";
+        switch (c.get(Calendar.DAY_OF_WEEK)) {
+            case 1:
+                week += "天";
+                break;
+            case 2:
+                week += "一";
+                break;
+            case 3:
+                week += "二";
+                break;
+            case 4:
+                week += "三";
+                break;
+            case 5:
+                week += "四";
+                break;
+            case 6:
+                week += "五";
+                break;
+            case 7:
+                week += "六";
+                break;
+            default:
+                break;
+        }
+        return week;
     }
 
     @Override
@@ -460,7 +308,13 @@ public class MainActivity extends Activity implements View.OnClickListener{
         temperatureTv.setText(todayWeather.getLow()+"~"+todayWeather.getHigh());
         climateTv.setText(todayWeather.getType());
         windTv.setText("风力:"+ todayWeather.getFengli());
-//        data1TV.setText(todayWeather.getDate1());
+        for (int i = 0; i < 4; i++) {
+            forecastTvArr.get(i).get("date").setText(todayWeather.getForecast().get(i).get("date"));
+            forecastTvArr.get(i).get("temp").setText(todayWeather.getForecast().get(i).get("low")
+                    + "~" + todayWeather.getForecast().get(i).get("high"));
+            forecastTvArr.get(i).get("fengli").setText(todayWeather.getForecast().get(i).get("fengli"));
+            forecastTvArr.get(i).get("type").setText(todayWeather.getForecast().get(i).get("type"));
+        }
         Toast.makeText(MainActivity.this,"更新成功！",Toast.LENGTH_SHORT).show();
         updateProgress.setVisibility(View.INVISIBLE);
         mUpdateBtn.setVisibility(View.VISIBLE);

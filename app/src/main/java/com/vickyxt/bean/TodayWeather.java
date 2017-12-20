@@ -1,5 +1,11 @@
 package com.vickyxt.bean;
 
+import com.alibaba.fastjson.JSONArray;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.HashMap;
+
 /**
  * Created by VickyXT on 2017/10/16.
  */
@@ -12,17 +18,14 @@ public class TodayWeather {
     private String pm25;
     private String quality;
     private String fengxiang;
-    private String fengli;
+
     private String date;
+    private String fengli;
     private String high;
     private String low;
     private String type;
 
-    private String date1;
-    private String low1;
-    private String high1;
-    private String fengli1;
-    private String type1;
+    private ArrayList<HashMap<String, String>> forecast;
 
     public TodayWeather() {
     }
@@ -75,8 +78,8 @@ public class TodayWeather {
         return wendu;
     }
 
-    public String getDate1(){
-        return date1;
+    public ArrayList<HashMap<String, String>> getForecast() {
+        return forecast;
     }
 
     public void setCity(String city) {
@@ -127,24 +130,7 @@ public class TodayWeather {
         this.type = type;
     }
 
-    public void setDate1(String date1) { this.date1 = date1;}
-
-    @Override
-    public String toString(){
-        return "TodayWeather{"+
-                "city=" + city + '\'' +
-                ", updatetime=" + updatetime + '\'' +
-                ", wendu=" + wendu + '\'' +
-                ", shidu=" + shidu + '\'' +
-                ", pm25=" + pm25 + '\'' +
-                ", quality=" + quality + '\'' +
-                ", fengli=" + fengli + '\'' +
-                ", fengxiang=" + fengxiang + '\'' +
-                ", date=" + date + '\'' +
-                ", high=" + high + '\'' +
-                ", low=" + low + '\'' +
-                ", type=" + type + '\'' +
-                ", date1=" + date1 + '\'' +
-                '}';
+    public void setForecast(ArrayList<HashMap<String, String>> forecast) {
+        this.forecast = forecast;
     }
 }
