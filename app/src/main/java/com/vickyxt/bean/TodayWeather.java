@@ -18,6 +18,15 @@ public class TodayWeather {
     private String low;
     private String type;
 
+    private String date1;
+    private String low1;
+    private String high1;
+    private String fengli1;
+    private String type1;
+
+    public TodayWeather() {
+    }
+
     public String getCity() {
         return city;
     }
@@ -64,6 +73,10 @@ public class TodayWeather {
 
     public String getWendu() {
         return wendu;
+    }
+
+    public String getDate1(){
+        return date1;
     }
 
     public void setCity(String city) {
@@ -114,6 +127,8 @@ public class TodayWeather {
         this.type = type;
     }
 
+    public void setDate1(String date1) { this.date1 = date1;}
+
     @Override
     public String toString(){
         return "TodayWeather{"+
@@ -129,6 +144,7 @@ public class TodayWeather {
                 ", high=" + high + '\'' +
                 ", low=" + low + '\'' +
                 ", type=" + type + '\'' +
+                ", date1=" + date1 + '\'' +
                 '}';
     }
 }

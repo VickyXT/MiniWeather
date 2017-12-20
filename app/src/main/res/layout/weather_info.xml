@@ -279,7 +279,253 @@
             </RelativeLayout>
         </RelativeLayout>
 
-        <!--七日天气-->
+        <!--四日天气-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/forecast"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="15dp"
+            android:weightSum="4"
+            android:orientation="horizontal">
+
+            <!--未来1日-->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <!--日期-->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/date1"
+                    android:text="星期六"
+                    android:textColor="#ffffff"
+                    android:textSize="20sp"
+                    android:layout_gravity="center_horizontal"/>
+
+                <!--阴晴图-->
+                <ImageView
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:id="@+id/img1"
+                    android:src="@drawable/biz_plugin_weather_qing"
+                    android:layout_gravity="center_horizontal"/>
+
+                <!--温度-->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/temp1"
+                    android:text="-1度~2度"
+                    android:textSize="16sp"
+                    android:textColor="#ffffffff"
+                    android:layout_gravity="center_horizontal"/>
+
+                <!--阴晴-->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/cli1"
+                    android:text="多云"
+                    android:textSize="16sp"
+                    android:textColor="#ffffffff"
+                    android:layout_marginTop="10dp"
+                    android:layout_gravity="center_horizontal"/>
+
+                <!--风力-->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/feng1"
+                    android:text="微风"
+                    android:textSize="16sp"
+                    android:textColor="#ffffffff"
+                    android:layout_marginTop="10dp"
+                    android:layout_gravity="center_horizontal"/>
+            </LinearLayout>
+
+            <!--未来2日-->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <!--日期-->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/date2"
+                    android:text="星期日"
+                    android:textColor="#ffffff"
+                    android:textSize="20sp"
+                    android:layout_gravity="center_horizontal"/>
+
+                <!--阴晴图-->
+                <ImageView
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:id="@+id/img2"
+                    android:src="@drawable/biz_plugin_weather_qing"
+                    android:layout_gravity="center_horizontal"/>
+
+                <!--温度-->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/temp2"
+                    android:text="-1度~2度"
+                    android:textSize="16sp"
+                    android:textColor="#ffffffff"
+                    android:layout_gravity="center_horizontal"/>
+
+                <!--阴晴-->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/cli2"
+                    android:text="多云"
+                    android:textSize="16sp"
+                    android:textColor="#ffffffff"
+                    android:layout_marginTop="10dp"
+                    android:layout_gravity="center_horizontal"/>
+
+                <!--风力-->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/feng2"
+                    android:text="微风"
+                    android:textSize="16sp"
+                    android:textColor="#ffffffff"
+                    android:layout_marginTop="10dp"
+                    android:layout_gravity="center_horizontal"/>
+            </LinearLayout>
+
+            <!--未来3日-->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <!--日期-->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/date3"
+                    android:text="星期一"
+                    android:textColor="#ffffff"
+                    android:textSize="20sp"
+                    android:layout_gravity="center_horizontal"/>
+
+                <!--阴晴图-->
+                <ImageView
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:id="@+id/img3"
+                    android:src="@drawable/biz_plugin_weather_qing"
+                    android:layout_gravity="center_horizontal"/>
+
+                <!--温度-->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/temp3"
+                    android:text="-1度~2度"
+                    android:textSize="16sp"
+                    android:textColor="#ffffffff"
+                    android:layout_gravity="center_horizontal"/>
+
+                <!--阴晴-->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/cli3"
+                    android:text="多云"
+                    android:textSize="16sp"
+                    android:textColor="#ffffffff"
+                    android:layout_marginTop="10dp"
+                    android:layout_gravity="center_horizontal"/>
+
+                <!--风力-->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/feng3"
+                    android:text="微风"
+                    android:textSize="16sp"
+                    android:textColor="#ffffffff"
+                    android:layout_marginTop="10dp"
+                    android:layout_gravity="center_horizontal"/>
+            </LinearLayout>
+
+            <!--未来4日-->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <!--日期-->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/date4"
+                    android:text="星期二"
+                    android:textColor="#ffffff"
+                    android:textSize="20sp"
+                    android:layout_gravity="center_horizontal"/>
+
+                <!--阴晴图-->
+                <ImageView
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:id="@+id/img4"
+                    android:src="@drawable/biz_plugin_weather_qing"
+                    android:layout_gravity="center_horizontal"/>
+
+                <!--温度-->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/temp4"
+                    android:text="-1度~2度"
+                    android:textSize="16sp"
+                    android:textColor="#ffffffff"
+                    android:layout_gravity="center_horizontal"/>
+
+                <!--阴晴-->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/cli4"
+                    android:text="多云"
+                    android:textSize="16sp"
+                    android:textColor="#ffffffff"
+                    android:layout_marginTop="10dp"
+                    android:layout_gravity="center_horizontal"/>
+
+                <!--风力-->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/feng4"
+                    android:text="微风"
+                    android:textSize="16sp"
+                    android:textColor="#ffffffff"
+                    android:layout_marginTop="10dp"
+                    android:layout_gravity="center_horizontal"/>
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+
 
         <!--广告等-->
     </LinearLayout>
