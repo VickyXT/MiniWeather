@@ -318,5 +318,23 @@ public class MainActivity extends Activity implements View.OnClickListener{
         Toast.makeText(MainActivity.this,"更新成功！",Toast.LENGTH_SHORT).show();
         updateProgress.setVisibility(View.INVISIBLE);
         mUpdateBtn.setVisibility(View.VISIBLE);
+
+
+//      更新pm25图片
+        int pm25 = Integer.parseInt(todayWeather.getPm25());
+        if (pm25 <= 50){
+            pmImg.setImageResource(R.drawable.biz_plugin_weather_0_50);
+        }else if (pm25 <= 100 && pm25 >50){
+            pmImg.setImageResource(R.drawable.biz_plugin_weather_51_100);
+        }else if (pm25 <= 150 && pm25 >100){
+            pmImg.setImageResource(R.drawable.biz_plugin_weather_101_150);
+        }else if (pm25 <= 200 && pm25 >150){
+            pmImg.setImageResource(R.drawable.biz_plugin_weather_151_200);
+        }else if (pm25 <= 300 && pm25 >200){
+            pmImg.setImageResource(R.drawable.biz_plugin_weather_201_300);
+        }else if (pm25 >300){
+            pmImg.setImageResource(R.drawable.biz_plugin_weather_greater_300);
+        }
     }
+
 }
