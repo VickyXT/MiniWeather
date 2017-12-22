@@ -38,6 +38,7 @@ import okhttp3.Request;
 
 public class MainActivity extends Activity implements View.OnClickListener{
 
+    private static final int SHOW_ERROR = 0;
     private static final int UPDATE_TODAY_WEATHER = 1;
     private ImageView mUpdateBtn;
     private ProgressBar updateProgress;
@@ -53,6 +54,9 @@ public class MainActivity extends Activity implements View.OnClickListener{
             switch (msg.what){
                 case UPDATE_TODAY_WEATHER:
                     updateTodayWeather((TodayWeather)msg.obj);
+                    break;
+                case SHOW_ERROR:
+                    Toast.makeText(MainActivity.this, (String) msg.obj, Toast.LENGTH_SHORT).show();
                     break;
                 default:
                     break;
@@ -170,50 +174,58 @@ public class MainActivity extends Activity implements View.OnClickListener{
                     Log.d(TAG,json);
                     JSONObject map = com.alibaba.fastjson.JSON.parseObject(json, new TypeReference<JSONObject>() {});
                     JSONObject meta = map.getJSONObject("meta");
-                    JSONObject evn = map.getJSONObject("evn");
-                    JSONObject observe = map.getJSONObject("observe");
-                    JSONArray forecast = map.getJSONArray("forecast");
+                    int status = meta.getInteger("status");
+                    if (status == 1000) {
+                        JSONObject evn = map.getJSONObject("evn");
+                        JSONObject observe = map.getJSONObject("observe");
+                        JSONArray forecast = map.getJSONArray("forecast");
 
-                    todayWeather.setCity(meta.getString("city"));
-                    todayWeather.setUpdatetime(meta.getString("up_time"));
-                    todayWeather.setWendu(observe.getString("temp"));
-                    todayWeather.setShidu(observe.getString("shidu"));
-                    todayWeather.setPm25(evn.getString("pm25"));
-                    todayWeather.setQuality(evn.getString("quality"));
-                    todayWeather.setFengxiang(observe.getString("wd"));
+                        todayWeather.setCity(meta.getString("city"));
+                        todayWeather.setUpdatetime(meta.getString("up_time"));
+                        todayWeather.setWendu(observe.getString("temp"));
+                        todayWeather.setShidu(observe.getString("shidu"));
+                        todayWeather.setPm25(evn.getString("pm25"));
+                        todayWeather.setQuality(evn.getString("quality"));
+                        todayWeather.setFengxiang(observe.getString("wd"));
 
-                    ArrayList<HashMap<String, String>> arr = new ArrayList<HashMap<String, String>>();
-                    int i = 0;
-                    for (Object data: forecast) {
-                        data = (JSONObject) data;
-                        String date = ((JSONObject) data).getString("date");
-                        String high = ((JSONObject) data).getString("high");
-                        String low = ((JSONObject) data).getString("low");
-                        JSONObject day = ((JSONObject) data).getJSONObject("day");
-                        String wp = day.getString("wp");
-                        String wthr = day.getString("wthr");
-                        HashMap<String, String> item = new HashMap<String, String>();
-                        item.put("date", getDayOfWeek(date));
-                        item.put("high", high);
-                        item.put("low", low);
-                        item.put("fengli", wp);
-                        item.put("type", wthr);
-                        arr.add(item);
-                        if (i == 1) {
-                            todayWeather.setDate(getDayOfWeek(date));
-                            todayWeather.setHigh(high);
-                            todayWeather.setLow(low);
-                            todayWeather.setFengli(wp);
-                            todayWeather.setType(wthr);
+                        ArrayList<HashMap<String, String>> arr = new ArrayList<HashMap<String, String>>();
+                        int i = 0;
+                        for (Object data: forecast) {
+                            data = (JSONObject) data;
+                            String date = ((JSONObject) data).getString("date");
+                            String high = ((JSONObject) data).getString("high");
+                            String low = ((JSONObject) data).getString("low");
+                            JSONObject day = ((JSONObject) data).getJSONObject("day");
+                            String wp = day.getString("wp");
+                            String wthr = day.getString("wthr");
+                            HashMap<String, String> item = new HashMap<String, String>();
+                            item.put("date", getDayOfWeek(date));
+                            item.put("high", high);
+                            item.put("low", low);
+                            item.put("fengli", wp);
+                            item.put("type", wthr);
+                            arr.add(item);
+                            if (i == 1) {
+                                todayWeather.setDate(getDayOfWeek(date));
+                                todayWeather.setHigh(high);
+                                todayWeather.setLow(low);
+                                todayWeather.setFengli(wp);
+                                todayWeather.setType(wthr);
+                            }
+                            i++;
                         }
-                        i++;
-                    }
-                    todayWeather.setForecast(arr);
+                        todayWeather.setForecast(arr);
 
-                    Message msg = new Message();
-                    msg.what = UPDATE_TODAY_WEATHER;
-                    msg.obj = todayWeather;
-                    mHandler.sendMessage(msg);
+                        Message msg = new Message();
+                        msg.what = UPDATE_TODAY_WEATHER;
+                        msg.obj = todayWeather;
+                        mHandler.sendMessage(msg);
+                    } else {
+                        Message msg = new Message();
+                        msg.what = SHOW_ERROR;
+                        msg.obj = "请求城市错误";
+                        mHandler.sendMessage(msg);
+                    }
                 }
             });
         } catch (Exception e) {
